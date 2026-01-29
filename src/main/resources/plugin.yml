@@ -1,0 +1,4 @@
+name: StaffShifts
+version: '1.0.0'
+main: it.ethereallabs.staffshifts.StaffShifts
+api-version: '1.21'
