@@ -31,6 +31,10 @@ public class CommandRegistry implements CommandExecutor, TabCompleter {
             return true;
         }
 
+        if(args.length == 0) {
+            return true;
+        }
+
         String subCommand = args[0].toLowerCase();
         CommandHandler handler = commands.get(subCommand);
 

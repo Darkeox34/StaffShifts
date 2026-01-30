@@ -1,4 +1,8 @@
 name: StaffShifts
-version: '1.0.0'
+version: 1.0.0
 main: it.ethereallabs.staffshifts.StaffShifts
-api-version: '1.21'
+api-version: 1.21
+commands:
+  ss:
+    description: Main command for StaffShifts
+    usage: /ss

@@ -38,7 +38,7 @@ public class ShiftCommand extends BaseCommand {
     }
 
     void handleBase(Player player) {
-        StaffDashboard staffDashboard = new StaffDashboard();
+        StaffDashboard staffDashboard = new StaffDashboard(player);
         staffDashboard.open(player);
     }
 }
