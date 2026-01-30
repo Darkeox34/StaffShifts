@@ -29,6 +29,8 @@ public class StaffDashboard extends BaseMenu {
     public void draw(Player p) {
         inv.clear();
         inv.setItem(11, createShiftItem(p));
+        if(p.hasPermission("staffshifts.management") || p.isOp())
+            inv.setItem(13, createManagementItem());
         inv.setItem(15, createShiftHistoryItem());
     }
 
@@ -36,6 +38,10 @@ public class StaffDashboard extends BaseMenu {
     public void handleClick(Player p, int slot, InventoryClickEvent e) {
         boolean leftClick = e.isLeftClick();
         boolean rightClick = e.isRightClick();
+
+        if(slot == 13 && (p.hasPermission("staffshifts.management") || p.isOp())){
+            new ManagementMenu().open(p);
+        }
 
         if (slot == 11) {
             if(leftClick) {
@@ -56,6 +62,9 @@ public class StaffDashboard extends BaseMenu {
                 }, () -> new StaffDashboard(p).open(p)).open(p);
             }
         }
+        if(slot == 15){
+            new ShiftHistory().open(p);
+        }
     }
 
     public ItemStack createShiftItem(Player p) {
@@ -72,11 +81,11 @@ public class StaffDashboard extends BaseMenu {
             String idleTime = TimeUtils.formatDuration(shift.getIdleMillis());
             String totalTime = TimeUtils.formatDuration(shift.getTotalDuration());
 
-            shiftItemLore.add("");
+            shiftItemLore.add("§8-----------------------");
             shiftItemLore.add("§aActive Time: " + activeTime);
             shiftItemLore.add("§cIdle Time: " + idleTime);
             shiftItemLore.add("§9Total Time: " + totalTime);
-            shiftItemLore.add("");
+            shiftItemLore.add("§8-----------------------");
             shiftItemLore.add("§c(L-Click) End this Shift");
             shiftItemLore.add("§b(R-Click) Manage Notes");
         } else {
@@ -104,5 +113,11 @@ public class StaffDashboard extends BaseMenu {
         return createItem("§eShift History", Material.LECTERN,
                 List.of("", "§b(L-Click) View your Shift History")
                 , 1);
+    }
+
+    public ItemStack createManagementItem(){
+        return createItem("§cManagement", Material.NETHER_STAR,
+                List.of("", "§b(L-Click) Open Management Menu"),
+                1);
     }
 }

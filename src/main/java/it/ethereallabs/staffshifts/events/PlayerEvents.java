@@ -13,9 +13,9 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 public class PlayerEvents implements Listener {
 
-    private StaffShifts staffShifts;
-    private AFKManager afkManager;
-    private ShiftsManager shiftsManager;
+    private final StaffShifts staffShifts;
+    private final AFKManager afkManager;
+    private final ShiftsManager shiftsManager;
 
     public PlayerEvents(StaffShifts staffShifts, AFKManager afkManager, ShiftsManager shiftsManager) {
         this.staffShifts = staffShifts;

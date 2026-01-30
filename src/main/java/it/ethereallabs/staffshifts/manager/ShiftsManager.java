@@ -9,9 +9,9 @@ import java.util.HashSet;
 import java.util.UUID;
 
 public class ShiftsManager {
-    private HashSet<UUID> staffInDuty;
-    private HashMap<UUID, Shift> shifts;
-    private HashMap<UUID, ArrayList<Shift>> completedShifts;
+    private final HashSet<UUID> staffInDuty;
+    private final HashMap<UUID, Shift> shifts;
+    private final HashMap<UUID, ArrayList<Shift>> completedShifts;
 
     public ShiftsManager() {
         staffInDuty = new HashSet<>();

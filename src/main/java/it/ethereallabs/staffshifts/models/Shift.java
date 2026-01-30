@@ -76,7 +76,9 @@ public class Shift {
     public List<String> getNotes() { return new ArrayList<>(notes); }
 
     public long getTotalDuration() {
-        long end = (endTime == 0) ? System.currentTimeMillis() : endTime;
-        return end - startTime;
+        if (endTime != 0) {
+            return endTime - startTime;
+        }
+        return activeMillis + idleMillis;
     }
 }
