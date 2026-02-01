@@ -1,5 +1,6 @@
-package it.ethereallabs.staffshifts.gui;
+package it.ethereallabs.staffshifts.gui.management;
 
+import it.ethereallabs.staffshifts.gui.StaffDashboard;
 import it.ethereallabs.staffshifts.gui.abs.BaseMenu;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;

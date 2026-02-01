@@ -2,10 +2,10 @@ package it.ethereallabs.staffshifts.manager;
 
 import it.ethereallabs.staffshifts.StaffShifts;
 import it.ethereallabs.staffshifts.models.Shift;
+import it.ethereallabs.staffshifts.utils.MessageUtils;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -32,7 +32,7 @@ public class AFKManager {
         this.lastActivityMap = new HashMap<>();
         this.afkPlayers = new HashSet<>();
 
-        long seconds = 10;  //plugin.getConfig().getLong("afk-timeout-seconds", 300);
+        long seconds = plugin.getConfig().getLong("afk-threshold-seconds", 300);
         this.afkThresholdMillis = seconds * 1000L;
     }
 
@@ -51,19 +51,6 @@ public class AFKManager {
 
         lastActivityMap.put(uuid, System.currentTimeMillis());
 
-        if (afkPlayers.contains(uuid)) {
-            afkPlayers.remove(uuid);
-
-            Player p = Bukkit.getPlayer(uuid);
-            if (p != null) {
-                p.spigot().sendMessage(ChatMessageType.ACTION_BAR,
-                        new TextComponent(ChatColor.GREEN + "Welcome Back! You are in Duty again."));
-            }
-        }
-    }
-
-    public void removePlayer(UUID uuid) {
-        lastActivityMap.remove(uuid);
         afkPlayers.remove(uuid);
     }
 
@@ -80,21 +67,11 @@ public class AFKManager {
             if (timeSinceLastActivity >= afkThresholdMillis) {
                 afkPlayers.add(uuid);
 
-                Player p = Bukkit.getPlayer(uuid);
-                if (p != null) {
-                    p.spigot().sendMessage(ChatMessageType.ACTION_BAR,
-                            new TextComponent(ChatColor.YELLOW + "" + ChatColor.BOLD + "You are AFK "));
-                }
-
                 currentShift.addIdleTime(1000);
 
             } else {
                 currentShift.addActiveTime(1000);
             }
         }
-    }
-
-    public boolean isAfk(UUID uuid) {
-        return afkPlayers.contains(uuid);
     }
 }

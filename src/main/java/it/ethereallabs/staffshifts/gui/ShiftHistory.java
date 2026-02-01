@@ -3,6 +3,7 @@ package it.ethereallabs.staffshifts.gui;
 import it.ethereallabs.staffshifts.StaffShifts;
 import it.ethereallabs.staffshifts.gui.abs.BaseMenu;
 import it.ethereallabs.staffshifts.models.Shift;
+import it.ethereallabs.staffshifts.models.Staffer;
 import it.ethereallabs.staffshifts.utils.TimeUtils;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -16,26 +17,30 @@ import java.util.Date;
 import java.util.List;
 
 public class ShiftHistory extends BaseMenu {
-    public ShiftHistory(){
+    
+    private List<Shift> loadedShifts;
+    private final Staffer target;
+
+    public ShiftHistory(Staffer target){
         super("Shift History", 27);
+        this.target = target;
+    }
+    
+    @Override
+    public void open(Player p) {
+        StaffShifts.getShiftsManager().getRecentShifts(target.getUuid(), 5, shifts -> {
+            this.loadedShifts = shifts;
+            super.open(p);
+        });
     }
 
     @Override
     public void draw(Player p) {
-        List<Shift> shifts = StaffShifts.getShiftsManager().getCompletedShiftsFor(p.getUniqueId());
+        if (loadedShifts == null) return;
 
-        List<Shift> recentShifts = shifts.stream()
-                .sorted((s1, s2) -> Long.compare(s2.getStartTime(), s1.getStartTime()))
-                .limit(5)
-                .toList();
-
-        for (int i = 0; i < recentShifts.size(); i++) {
-            int slot = 11 + i;
-            Shift shift = recentShifts.get(i);
-
-            inv.setItem(slot, createShiftItem(shift, i+1));
+        for (int i = 0; i < loadedShifts.size(); i++) {
+            inv.setItem(11 + i, createShiftItem(loadedShifts.get(i), i + 1));
         }
-
         inv.setItem(26, createItem("§cBack", Material.RED_STAINED_GLASS_PANE, List.of(), 1));
     }
 

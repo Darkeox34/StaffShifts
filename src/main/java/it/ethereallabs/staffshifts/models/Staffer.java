@@ -9,6 +9,7 @@ public class Staffer {
 
     private long totalActiveMillis;
     private long totalIdleMillis;
+    private long lastJoined;
 
     public Staffer(UUID uuid, String username) {
         this.uuid = uuid;
@@ -17,11 +18,12 @@ public class Staffer {
         this.totalIdleMillis = 0;
     }
 
-    public Staffer(UUID uuid, String username, long totalActiveMillis, long totalIdleMillis) {
+    public Staffer(UUID uuid, String username, long totalActive, long totalIdle, long lastJoined) {
         this.uuid = uuid;
         this.username = username;
-        this.totalActiveMillis = totalActiveMillis;
-        this.totalIdleMillis = totalIdleMillis;
+        this.totalActiveMillis = totalActive;
+        this.totalIdleMillis = totalIdle;
+        this.lastJoined = lastJoined;
     }
 
     public void addStats(long active, long idle) {
@@ -32,5 +34,7 @@ public class Staffer {
     public UUID getUuid() { return uuid; }
     public String getUsername() { return username; }
     public long getTotalActiveMillis() { return totalActiveMillis; }
+    public long getLastJoined() { return lastJoined; }
+    public void setLastJoined(long lastJoined) { this.lastJoined = lastJoined; }
     public long getTotalIdleMillis() { return totalIdleMillis; }
 }

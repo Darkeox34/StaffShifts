@@ -2,8 +2,7 @@ package it.ethereallabs.staffshifts.gui;
 
 import it.ethereallabs.staffshifts.StaffShifts;
 import it.ethereallabs.staffshifts.gui.abs.BaseMenu;
-import it.ethereallabs.staffshifts.manager.AFKManager;
-import it.ethereallabs.staffshifts.utils.MessageUtils;
+import it.ethereallabs.staffshifts.gui.management.ManagementMenu;
 import it.ethereallabs.staffshifts.utils.TimeUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -11,18 +10,26 @@ import org.bukkit.Sound;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class StaffDashboard extends BaseMenu {
+    
+    private BukkitTask task;
+
     public StaffDashboard(Player p) {
         super("Staff Dashboard", 27);
-
-        Bukkit.getScheduler().runTaskTimer(StaffShifts.getInstance(), () -> draw(p), 20L, 20L);
+        this.task = Bukkit.getScheduler().runTaskTimer(StaffShifts.getInstance(), () -> {
+            if (inv != null && !inv.getViewers().isEmpty()) {
+                draw(p);
+            }
+        }, 20L, 20L);
     }
 
     @Override
@@ -33,11 +40,18 @@ public class StaffDashboard extends BaseMenu {
             inv.setItem(13, createManagementItem());
         inv.setItem(15, createShiftHistoryItem());
     }
+    
+    @Override
+    public void onClose(InventoryCloseEvent e) {
+        if (task != null && !task.isCancelled()) {
+            task.cancel();
+        }
+        super.onClose(e);
+    }
 
     @Override
     public void handleClick(Player p, int slot, InventoryClickEvent e) {
         boolean leftClick = e.isLeftClick();
-        boolean rightClick = e.isRightClick();
 
         if(slot == 13 && (p.hasPermission("staffshifts.management") || p.isOp())){
             new ManagementMenu().open(p);
@@ -52,18 +66,18 @@ public class StaffDashboard extends BaseMenu {
                     var manager = StaffShifts.getShiftsManager();
                     if (!isCurrentlyInShift) {
                         manager.addShift(p.getUniqueId());
-                        MessageUtils.sendMessage(p, "§aShift Started!");
                     } else {
-                        manager.getShift(p.getUniqueId()).endShift();
-                        MessageUtils.sendMessage(p,"§cShift Terminated!");
+                        manager.endShift(p.getUniqueId());
                     }
                     p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 1f);
                     new StaffDashboard(p).open(p);
                 }, () -> new StaffDashboard(p).open(p)).open(p);
             }
         }
-        if(slot == 15){
-            new ShiftHistory().open(p);
+        else if (slot == 15) {
+            StaffShifts.getShiftsManager().getStafferProfile(p.getUniqueId(), staffer -> {
+                new ShiftHistory(staffer).open(p);
+            });
         }
     }
 
@@ -87,7 +101,6 @@ public class StaffDashboard extends BaseMenu {
             shiftItemLore.add("§9Total Time: " + totalTime);
             shiftItemLore.add("§8-----------------------");
             shiftItemLore.add("§c(L-Click) End this Shift");
-            shiftItemLore.add("§b(R-Click) Manage Notes");
         } else {
             shiftItemLore.add("");
             shiftItemLore.add("§cNot in duty");

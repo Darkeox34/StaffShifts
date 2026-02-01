@@ -1,8 +1,5 @@
 package it.ethereallabs.staffshifts.models;
 
-import it.ethereallabs.staffshifts.StaffShifts;
-import it.ethereallabs.staffshifts.manager.ShiftsManager;
-
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,14 +37,8 @@ public class Shift {
         this.notes = notes != null ? notes : new ArrayList<>();
     }
 
-    public void endShift() {
-        if (this.endTime == 0) {
-            this.endTime = System.currentTimeMillis();
-        }
-        ShiftsManager manager = StaffShifts.getShiftsManager();
-        manager.getShifts().remove(this.staffUuid);
-        manager.getStaffInDuty().remove(this.staffUuid);
-        manager.addCompletedShift(this.staffUuid, this);
+    public void setEndTime(long endTime) {
+        this.endTime = endTime;
     }
 
     public boolean isOngoing() {

@@ -1,13 +1,8 @@
-############################################################
-# +------------------------------------------------------+ #
-# |                Database Configuration                | #
-# +------------------------------------------------------+ #
-############################################################
-
 database:
   mysql:
     host: "localhost"
     port: 3306
     database: "staffshifts"
-    username: "root"
-    password: "password"
+    username: "admin"
+    password: "ciao1234"
+afk-threshold-seconds: 300
