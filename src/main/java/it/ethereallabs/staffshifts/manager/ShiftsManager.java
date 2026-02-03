@@ -76,7 +76,9 @@ public class ShiftsManager {
         staffInDuty.remove(uuid);
 
         if (shift != null) {
-            shift.setEndTime(System.currentTimeMillis());
+            long now = System.currentTimeMillis();
+            shift.setEndTime(now);
+
             databaseManager.saveShift(shift, false);
 
             getStafferProfile(uuid, staffer -> {
@@ -100,6 +102,12 @@ public class ShiftsManager {
         );
     }
 
+    public void getAllShifts(UUID uuid, Consumer<List<Shift>> callback) {
+        databaseManager.fetchAllShifts(uuid, shifts ->
+                Bukkit.getScheduler().runTask(plugin, () -> callback.accept(shifts))
+        );
+    }
+
     public void getWeeklyLeaderboard(long since, Consumer<Map<UUID, LeaderboardEntry>> callback) {
         databaseManager.fetchWeeklyLeaderboard(since, data ->
                 Bukkit.getScheduler().runTask(plugin, () -> callback.accept(data))
@@ -115,17 +123,27 @@ public class ShiftsManager {
         databaseManager.getStaffer(uuid, rs -> {
             try {
                 Staffer staffer;
+
+                String currentName = Bukkit.getOfflinePlayer(uuid).getName();
+                if (currentName == null) currentName = "Unknown";
+
                 if (rs.next()) {
                     staffer = new Staffer(
                             uuid,
-                            rs.getString("username"),
+                            currentName,
                             rs.getLong("total_active_millis"),
                             rs.getLong("total_idle_millis"),
                             rs.getLong("last_joined")
                     );
+
+                    if (!rs.getString("username").equals(currentName)) {
+                        databaseManager.updateStafferData(staffer);
+                    }
                 } else {
-                    staffer = new Staffer(uuid, Bukkit.getOfflinePlayer(uuid).getName(), 0, 0, System.currentTimeMillis());
+                    staffer = new Staffer(uuid, currentName, 0, 0, System.currentTimeMillis());
+                    databaseManager.updateStafferData(staffer);
                 }
+
                 stafferCache.put(uuid, staffer);
                 Bukkit.getScheduler().runTask(plugin, () -> callback.accept(staffer));
             } catch (SQLException e) {

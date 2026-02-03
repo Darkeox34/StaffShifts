@@ -28,14 +28,6 @@ public class MessageUtils {
         String message = messagesConfig.getString(key, key);
         return ChatColor.translateAlternateColorCodes('&', prefix + message);
     }
-    
-    public static String getRawMessage(String key) {
-        if (messagesConfig == null) {
-            loadMessages();
-        }
-        String message = messagesConfig.getString(key, key);
-        return ChatColor.translateAlternateColorCodes('&', message);
-    }
 
     public static void sendMessage(CommandSender sender, String key) {
         sender.sendMessage(getMessage(key));

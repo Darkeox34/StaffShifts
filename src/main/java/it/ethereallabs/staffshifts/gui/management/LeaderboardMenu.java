@@ -17,6 +17,7 @@ import java.util.*;
 public class LeaderboardMenu extends BaseMenu {
 
     private Map<UUID, LeaderboardEntry> weeklyActiveTime;
+    private final Map<Integer, UUID> slotToUuid = new java.util.HashMap<>();
 
     public LeaderboardMenu() {
         super("Staff Leaderboard (Weekly)", 54);
@@ -35,15 +36,20 @@ public class LeaderboardMenu extends BaseMenu {
     public void draw(Player p) {
         if (weeklyActiveTime == null) return;
 
+        slotToUuid.clear();
         int rank = 1;
+
         for (Map.Entry<UUID, LeaderboardEntry> entry : weeklyActiveTime.entrySet()) {
             if (rank > 21) break;
 
+            UUID stafferUuid = entry.getKey();
             LeaderboardEntry stats = entry.getValue();
 
             int slot = 10 + ((rank - 1) / 7 * 9) + ((rank - 1) % 7);
 
             inv.setItem(slot, createLeaderboardItem(stats, rank, p));
+            slotToUuid.put(slot, stafferUuid);
+
             rank++;
         }
 
@@ -52,11 +58,19 @@ public class LeaderboardMenu extends BaseMenu {
 
     @Override
     public void handleClick(Player p, int slot, InventoryClickEvent e) {
-        if(slot == 49){
-            if(p.hasPermission("staffshifts.management") || p.isOp())
+        if (slot == 49) {
+            if (p.hasPermission("staffshifts.management") || p.isOp())
                 new ManagementMenu().open(p);
             else
                 p.closeInventory();
+            return;
+        }
+
+        UUID clickedUuid = slotToUuid.get(slot);
+        if (clickedUuid != null) {
+            Player target = Bukkit.getPlayer(clickedUuid);
+            if(target == null) return;
+            new StafferHistory(target, true).open(p);
         }
     }
 
@@ -69,6 +83,8 @@ public class LeaderboardMenu extends BaseMenu {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
         lore.add("§7Last Online: §e" + (entry.lastJoined > 0 ? sdf.format(new Date(entry.lastJoined)) : "Never"));
         lore.add("§8-----------------------");
+        lore.add("");
+        lore.add("§b(L-Click) View Staffer History");
 
 
         ItemStack head = createItem("§e" + (entry.name != null ? entry.name : "Unknown"), Material.PLAYER_HEAD, lore, 1);

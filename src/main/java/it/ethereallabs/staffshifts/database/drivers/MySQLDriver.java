@@ -126,6 +126,23 @@ public class MySQLDriver implements Driver {
     }
 
     @Override
+    public void getAllShifts(UUID uuid, Consumer<ResultSet> callback) {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                try (Connection conn = dataSource.getConnection();
+                     PreparedStatement ps = conn.prepareStatement(
+                             "SELECT * FROM staff_shifts WHERE staff_uuid = ? AND is_active = FALSE ORDER BY start_time DESC")) {
+                    ps.setString(1, uuid.toString());
+                    callback.accept(ps.executeQuery());
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }.runTaskAsynchronously(plugin);
+    }
+
+    @Override
     public void clearAllData() {
         try (Connection conn = dataSource.getConnection()) {
             Statement st = conn.createStatement();
@@ -144,8 +161,12 @@ public class MySQLDriver implements Driver {
                 try (Connection conn = dataSource.getConnection();
                      PreparedStatement ps = conn.prepareStatement(
                              "SELECT s.staff_uuid, SUM(s.active_millis) as total_active, st.username, st.last_joined " +
-                                     "FROM staff_shifts s LEFT JOIN staffer st ON s.staff_uuid = st.uuid " +
-                                     "WHERE s.start_time >= ? GROUP BY s.staff_uuid ORDER BY total_active DESC")) {
+                                     "FROM staff_shifts s " +
+                                     "INNER JOIN staffer st ON s.staff_uuid = st.uuid " +
+                                     "WHERE s.start_time >= ? " +
+                                     "GROUP BY s.staff_uuid " +
+                                     "HAVING total_active > 0 " +
+                                     "ORDER BY total_active DESC")) {
                     ps.setLong(1, since);
                     callback.accept(ps.executeQuery());
                 } catch (SQLException e) {
@@ -187,6 +208,22 @@ public class MySQLDriver implements Driver {
                 try (Connection conn = dataSource.getConnection();
                      PreparedStatement ps = conn.prepareStatement("SELECT * FROM staffer WHERE uuid = ?")) {
                     ps.setString(1, uuid.toString());
+                    callback.accept(ps.executeQuery());
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }.runTaskAsynchronously(plugin);
+    }
+
+    @Override
+    public void getStafferByName(String name, Consumer<ResultSet> callback) {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                try (Connection conn = dataSource.getConnection();
+                     PreparedStatement ps = conn.prepareStatement("SELECT * FROM staffer WHERE username = ?")) {
+                    ps.setString(1, name);
                     callback.accept(ps.executeQuery());
                 } catch (SQLException e) {
                     e.printStackTrace();

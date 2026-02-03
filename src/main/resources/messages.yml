@@ -1,4 +1,4 @@
-prefix: "&eStaffShifts &8⇒&7"
+prefix: "&eStaffShifts &8⇒ &7"
 no-permission: "&cYou don't have permission to do this."
 shift-started: "&aYour shift has started."
 shift-ended: "&cYour shift has ended. Duration: &e%duration%"

@@ -1,7 +1,6 @@
 package it.ethereallabs.staffshifts.gui.management;
 
 import it.ethereallabs.staffshifts.StaffShifts;
-import it.ethereallabs.staffshifts.gui.ShiftHistory;
 import it.ethereallabs.staffshifts.gui.abs.BaseMenu;
 import it.ethereallabs.staffshifts.models.Shift;
 import it.ethereallabs.staffshifts.utils.TimeUtils;
@@ -22,6 +21,7 @@ import java.util.UUID;
 public class ActiveStaffMenu extends BaseMenu {
     
     private final BukkitTask task;
+    private final Map<Integer, UUID> slotToUuid = new java.util.HashMap<>();
 
     public ActiveStaffMenu(Player p) {
         super("Active Staff", 36);
@@ -35,16 +35,22 @@ public class ActiveStaffMenu extends BaseMenu {
     @Override
     public void draw(Player p) {
         Map<UUID, Shift> shifts = StaffShifts.getShiftsManager().getActiveShifts();
-        final int[] slot = {0};
+        slotToUuid.clear();
 
-        for(int i=0; i<35; i++) inv.setItem(i, null);
+        int currentSlot = 0;
 
-        shifts.forEach((uuid, shift) -> {
-            if (slot[0] < 35) {
-                inv.setItem(slot[0], createStaffItem(shift));
-                slot[0]++;
-            }
-        });
+        for (int i = 0; i < 35; i++) inv.setItem(i, null);
+
+        for (Map.Entry<UUID, Shift> entry : shifts.entrySet()) {
+            if (currentSlot >= 35) break;
+
+            UUID stafferUuid = entry.getKey();
+            Shift shift = entry.getValue();
+
+            inv.setItem(currentSlot, createStaffItem(shift));
+            slotToUuid.put(currentSlot, stafferUuid);
+            currentSlot++;
+        }
 
         inv.setItem(35, createItem("§cBack", Material.RED_STAINED_GLASS_PANE, List.of(), 1));
     }
@@ -53,6 +59,14 @@ public class ActiveStaffMenu extends BaseMenu {
     public void handleClick(Player p, int slot, InventoryClickEvent e) {
         if (slot == 35) {
             new ManagementMenu().open(p);
+        }
+
+        UUID clickedStafferUuid = slotToUuid.get(slot);
+        if (clickedStafferUuid != null) {
+            Player target = Bukkit.getPlayer(clickedStafferUuid);
+            if (target != null) {
+                new StafferHistory(target, false).open(p);
+            }
         }
     }
     
@@ -76,6 +90,8 @@ public class ActiveStaffMenu extends BaseMenu {
         staffItemLore.add("§cIdle Time: " + idleTime);
         staffItemLore.add("§9Total Time: " + totalTime);
         staffItemLore.add("§8-----------------------");
+        staffItemLore.add("");
+        staffItemLore.add("§b(L-Click) View Staffer History");
 
         Player p = Bukkit.getPlayer(shift.getStaffUuid());
         if(p == null)

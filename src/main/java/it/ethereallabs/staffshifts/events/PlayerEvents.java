@@ -1,6 +1,5 @@
 package it.ethereallabs.staffshifts.events;
 
-import it.ethereallabs.staffshifts.StaffShifts;
 import it.ethereallabs.staffshifts.manager.AFKManager;
 import it.ethereallabs.staffshifts.manager.ShiftsManager;
 import org.bukkit.entity.Player;

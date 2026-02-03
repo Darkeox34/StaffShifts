@@ -1,6 +1,5 @@
 package it.ethereallabs.staffshifts.models;
 
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -41,6 +40,14 @@ public class Shift {
         this.endTime = endTime;
     }
 
+    public void setActiveMillis(long activeMillis) {
+        this.activeMillis = activeMillis;
+    }
+
+    public void setIdleMillis(long idleMillis) {
+        this.idleMillis = idleMillis;
+    }
+
     public boolean isOngoing() {
         return this.endTime == 0;
     }
@@ -54,8 +61,15 @@ public class Shift {
     }
 
     public void addNote(String note) {
-        String formattedNote = String.format("[%s] %s", Instant.now().toString(), note);
+        String formattedNote = String.format("%s", note);
         this.notes.add(formattedNote);
+    }
+
+    public String removeNote(int index) {
+        if (index >= 0 && index < notes.size()) {
+            return notes.remove(index);
+        }
+        return null;
     }
 
     public UUID getShiftId() { return shiftId; }
@@ -67,9 +81,6 @@ public class Shift {
     public List<String> getNotes() { return new ArrayList<>(notes); }
 
     public long getTotalDuration() {
-        if (endTime != 0) {
-            return endTime - startTime;
-        }
         return activeMillis + idleMillis;
     }
 }

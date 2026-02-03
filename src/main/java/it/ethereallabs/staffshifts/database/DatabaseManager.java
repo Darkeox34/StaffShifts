@@ -49,12 +49,30 @@ public class DatabaseManager {
         });
     }
 
+    public void fetchAllShifts(UUID uuid, Consumer<List<Shift>> callback) {
+        driver.getAllShifts(uuid, rs -> {
+            List<Shift> shifts = new ArrayList<>();
+            try {
+                while (rs.next()) {
+                    shifts.add(mapResultSetToShift(rs, uuid));
+                }
+                callback.accept(shifts);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
     public void updateStafferData(Staffer staffer) {
         driver.updateStafferData(staffer);
     }
 
     public void getStaffer(UUID uuid, Consumer<ResultSet> callback) {
         driver.getStaffer(uuid, callback);
+    }
+
+    public void getStafferByName(String name, Consumer<ResultSet> callback) {
+        driver.getStafferByName(name, callback);
     }
 
     public void fetchWeeklyLeaderboard(long since, Consumer<Map<UUID, LeaderboardEntry>> callback) {

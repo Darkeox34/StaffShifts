@@ -2,7 +2,8 @@ package it.ethereallabs.staffshifts.commands;
 
 import it.ethereallabs.staffshifts.commands.abs.BaseCommand;
 import it.ethereallabs.staffshifts.commands.abs.CommandHandler;
-import it.ethereallabs.staffshifts.commands.subcommands.ShiftCommand;
+import it.ethereallabs.staffshifts.commands.subcommands.AdminCommand;
+import it.ethereallabs.staffshifts.commands.subcommands.StafferCommand;
 import it.ethereallabs.staffshifts.commands.subcommands.TestDataCommand;
 import it.ethereallabs.staffshifts.utils.MessageUtils;
 import org.bukkit.command.Command;
@@ -18,8 +19,9 @@ public class CommandRegistry implements CommandExecutor, TabCompleter {
     private final Map<String, CommandHandler> commands = new HashMap<>();
 
     public CommandRegistry() {
-        registerCommand(new ShiftCommand());
+        registerCommand(new StafferCommand());
         registerCommand(new TestDataCommand());
+        registerCommand(new AdminCommand());
     }
 
     private void registerCommand(BaseCommand handler) {

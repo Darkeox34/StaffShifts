@@ -100,6 +100,7 @@ public class StaffDashboard extends BaseMenu {
             shiftItemLore.add("§cIdle Time: " + idleTime);
             shiftItemLore.add("§9Total Time: " + totalTime);
             shiftItemLore.add("§8-----------------------");
+            shiftItemLore.add("");
             shiftItemLore.add("§c(L-Click) End this Shift");
         } else {
             shiftItemLore.add("");
