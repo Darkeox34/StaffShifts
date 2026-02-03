@@ -10,6 +10,8 @@ import java.io.File;
 
 public class MessageUtils {
 
+    private MessageUtils() {}
+
     private static FileConfiguration messagesConfig;
 
     public static void loadMessages() {

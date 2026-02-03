@@ -2,6 +2,7 @@ package it.ethereallabs.staffshifts.gui.management;
 
 import it.ethereallabs.staffshifts.gui.StaffDashboard;
 import it.ethereallabs.staffshifts.gui.abs.BaseMenu;
+import it.ethereallabs.staffshifts.utils.Permissions;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -26,16 +27,10 @@ public class ManagementMenu extends BaseMenu {
     @Override
     public void handleClick(Player p, int slot, InventoryClickEvent e) {
         if(slot == 11){
-            if(p.hasPermission("staffshifts.management") || p.isOp())
-                new ActiveStaffMenu(p).open(p);
-            else
-                p.closeInventory();
+            new ActiveStaffMenu(p).open(p);
         }
         else if(slot == 15){
-            if(p.hasPermission("staffshifts.management") || p.isOp())
-                new LeaderboardMenu().open(p);
-            else
-                p.closeInventory();
+            new LeaderboardMenu().open(p);
         }
         else if(slot == 26){
             new StaffDashboard(p).open(p);

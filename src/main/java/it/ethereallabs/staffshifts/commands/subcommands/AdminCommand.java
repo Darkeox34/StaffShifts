@@ -4,6 +4,7 @@ import it.ethereallabs.staffshifts.StaffShifts;
 import it.ethereallabs.staffshifts.commands.abs.BaseCommand;
 import it.ethereallabs.staffshifts.models.Shift;
 import it.ethereallabs.staffshifts.utils.MessageUtils;
+import it.ethereallabs.staffshifts.utils.Permissions;
 import it.ethereallabs.staffshifts.utils.TimeUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -17,13 +18,19 @@ public class AdminCommand extends BaseCommand {
     private enum Action { ADD, REMOVE, SET }
 
     public AdminCommand() {
-        super("admin");
+        super("admin", "<addtime|removetime|settime> <player> <active|idle> <time>");
     }
 
     @Override
     public boolean execute(CommandSender sender, String[] args) {
+
+        if (!sender.hasPermission(Permissions.MANAGEMENT)) {
+            MessageUtils.sendMessage(sender, "no-permission");
+            return true;
+        }
+
         if(args.length == 0) {
-            MessageUtils.sendMessage(sender, "&cUsage: /ss admin <removetime/addtime/settime> <player> <active/idle> <time>");
+            sendUsage(sender);
             return true;
         }
 
@@ -38,7 +45,7 @@ public class AdminCommand extends BaseCommand {
                 handleModification(sender, args, Action.SET);
                 break;
             default:
-                MessageUtils.sendMessage(sender, "&cUnknown command.");
+                sendUsage(sender);
                 break;
         }
         return true;
@@ -69,7 +76,7 @@ public class AdminCommand extends BaseCommand {
 
     private void handleModification(CommandSender sender, String[] args, Action action) {
         if(args.length < 4){
-            MessageUtils.sendMessage(sender, "&cUsage: /ss admin " + args[0] + " <player> <active/idle> <time>");
+            sendUsage(sender);
             return;
         }
 
@@ -141,7 +148,7 @@ public class AdminCommand extends BaseCommand {
                     StaffShifts.getDatabaseManager().saveShift(lastShift, false);
                     StaffShifts.getDatabaseManager().updateStafferData(staffer);
 
-                    MessageUtils.sendMessage(sender, "&aUpdated last shift and total stats for " + targetName + ".");
+                    MessageUtils.sendMessage(sender, "&aUpdated last shift for " + targetName + ".");
                 });
             }
         });

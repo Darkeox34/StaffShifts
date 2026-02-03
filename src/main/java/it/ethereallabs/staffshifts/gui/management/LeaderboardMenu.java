@@ -59,10 +59,7 @@ public class LeaderboardMenu extends BaseMenu {
     @Override
     public void handleClick(Player p, int slot, InventoryClickEvent e) {
         if (slot == 49) {
-            if (p.hasPermission("staffshifts.management") || p.isOp())
-                new ManagementMenu().open(p);
-            else
-                p.closeInventory();
+            new ManagementMenu().open(p);
             return;
         }
 

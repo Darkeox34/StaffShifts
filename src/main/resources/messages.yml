@@ -1,5 +1,6 @@
 prefix: "&eStaffShifts &8⇒ &7"
 no-permission: "&cYou don't have permission to do this."
+invalid-usage;: "§cInvalid usage."
 shift-started: "&aYour shift has started."
 shift-ended: "&cYour shift has ended. Duration: &e%duration%"
 db-error: "&cA database error occurred. Please contact an admin."

@@ -5,6 +5,7 @@ import it.ethereallabs.staffshifts.commands.abs.BaseCommand;
 import it.ethereallabs.staffshifts.gui.StaffDashboard;
 import it.ethereallabs.staffshifts.models.Shift;
 import it.ethereallabs.staffshifts.utils.MessageUtils;
+import it.ethereallabs.staffshifts.utils.Permissions;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -13,11 +14,16 @@ import java.util.List;
 public class StafferCommand extends BaseCommand {
 
     public StafferCommand() {
-        super("shift");
+        super("shift", "addnote <note> | removenote <index> | start | end");
     }
 
     @Override
     public boolean execute(CommandSender sender, String[] args) {
+
+        if (!sender.hasPermission(Permissions.STAFFER) || !sender.hasPermission(Permissions.MANAGEMENT)) {
+            MessageUtils.sendMessage(sender, "no-permission");
+            return true;
+        }
 
         if(!(sender instanceof Player player)){
             MessageUtils.sendMessage(sender, "only-players");
@@ -40,7 +46,7 @@ public class StafferCommand extends BaseCommand {
                 break;
             case "removenote":
                 if (args.length < 2) {
-                    player.sendMessage("§cUsage: /ss removenote <index>");
+                    sendUsage(sender);
                     return true;
                 }
                 try {

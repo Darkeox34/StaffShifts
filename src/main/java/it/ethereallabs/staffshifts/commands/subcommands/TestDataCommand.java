@@ -6,6 +6,7 @@ import it.ethereallabs.staffshifts.database.DatabaseManager;
 import it.ethereallabs.staffshifts.models.Shift;
 import it.ethereallabs.staffshifts.models.Staffer;
 import it.ethereallabs.staffshifts.utils.MessageUtils;
+import it.ethereallabs.staffshifts.utils.Permissions;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 
@@ -15,13 +16,13 @@ import java.util.concurrent.ThreadLocalRandom;
 public class TestDataCommand extends BaseCommand {
 
     public TestDataCommand() {
-        super("testdata");
+        super("testdata", "<n staffer> <minShift> <maxShift> | clear");
     }
 
     @Override
     public boolean execute(CommandSender sender, String[] args) {
-        if (!sender.hasPermission("staffshifts.management")) {
-            MessageUtils.sendMessage(sender, "&cNo permission!");
+        if (!sender.hasPermission(Permissions.MANAGEMENT)) {
+            MessageUtils.sendMessage(sender, "no-permission");
             return true;
         }
 
@@ -31,8 +32,7 @@ public class TestDataCommand extends BaseCommand {
         }
 
         if (args.length < 3) {
-            sender.sendMessage("/ss testdata <n staffer> <minShift> <maxShift>");
-            sender.sendMessage("/ss testdata clear");
+            sendUsage(sender);
             return true;
         }
 

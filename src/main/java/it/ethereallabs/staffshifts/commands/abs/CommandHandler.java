@@ -8,4 +8,6 @@ public interface CommandHandler {
     boolean execute(CommandSender sender, String[] args);
 
     List<String> tabComplete(CommandSender sender, String[] args);
+
+    String getUsage();
 }

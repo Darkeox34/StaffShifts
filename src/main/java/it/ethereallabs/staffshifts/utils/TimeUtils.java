@@ -1,6 +1,8 @@
 package it.ethereallabs.staffshifts.utils;
 
 public class TimeUtils {
+    private TimeUtils() {}
+
     public static String formatDuration(long millis) {
         long seconds = (millis / 1000) % 60;
         long minutes = (millis / (1000 * 60)) % 60;

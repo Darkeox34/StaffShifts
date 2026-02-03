@@ -3,9 +3,11 @@ package it.ethereallabs.staffshifts.commands;
 import it.ethereallabs.staffshifts.commands.abs.BaseCommand;
 import it.ethereallabs.staffshifts.commands.abs.CommandHandler;
 import it.ethereallabs.staffshifts.commands.subcommands.AdminCommand;
+import it.ethereallabs.staffshifts.commands.subcommands.HelpCommand;
 import it.ethereallabs.staffshifts.commands.subcommands.StafferCommand;
 import it.ethereallabs.staffshifts.commands.subcommands.TestDataCommand;
 import it.ethereallabs.staffshifts.utils.MessageUtils;
+import it.ethereallabs.staffshifts.utils.Permissions;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -22,6 +24,7 @@ public class CommandRegistry implements CommandExecutor, TabCompleter {
         registerCommand(new StafferCommand());
         registerCommand(new TestDataCommand());
         registerCommand(new AdminCommand());
+        registerCommand(new HelpCommand(commands));
     }
 
     private void registerCommand(BaseCommand handler) {
@@ -30,12 +33,13 @@ public class CommandRegistry implements CommandExecutor, TabCompleter {
 
     @Override
     public boolean onCommand(CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if (!sender.hasPermission("staffshifts.commands")) {
-            MessageUtils.sendMessage(sender, "&4You don't have permission to execute this command!");
+        if (!sender.hasPermission(Permissions.STAFFER) || !sender.hasPermission(Permissions.MANAGEMENT)) {
+            MessageUtils.sendMessage(sender, "no-permission");
             return true;
         }
 
         if(args.length == 0) {
+            sendDefaultMessage(sender);
             return true;
         }
 
@@ -45,7 +49,7 @@ public class CommandRegistry implements CommandExecutor, TabCompleter {
         if (handler != null) {
             return handler.execute(sender, Arrays.copyOfRange(args, 1, args.length));
         } else {
-            MessageUtils.sendMessage(sender, "&4Command not found!");
+            sendDefaultMessage(sender);
             return true;
         }
     }
@@ -73,5 +77,10 @@ public class CommandRegistry implements CommandExecutor, TabCompleter {
         }
 
         return handler.tabComplete(sender, Arrays.copyOfRange(args, 1, args.length));
+    }
+
+    void sendDefaultMessage(CommandSender sender) {
+        MessageUtils.sendMessage(sender, "§7§aVersion §bv1.0.1\n" +
+                "§aUse §b/ss help §ato list all commands");
     }
 }
