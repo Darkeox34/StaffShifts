@@ -5,6 +5,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 
 import java.io.File;
 
@@ -22,16 +23,25 @@ public class MessageUtils {
         messagesConfig = YamlConfiguration.loadConfiguration(file);
     }
 
-    public static String getMessage(String key) {
+    public static String getMessage(String key, Object... args) {
         if (messagesConfig == null) {
             loadMessages();
         }
-        String prefix = messagesConfig.getString("prefix", "&eStaffShifts &8⇒&7");
+
+        String prefix = messagesConfig.getString("prefix", "&eStaffShifts &8⇒ &7");
         String message = messagesConfig.getString(key, key);
+
+        if (args != null && args.length > 0) {
+            for (int i = 0; i < args.length; i++) {
+                message = message.replace("{" + i + "}", String.valueOf(args[i]));
+            }
+        }
+
         return ChatColor.translateAlternateColorCodes('&', prefix + message);
     }
 
-    public static void sendMessage(CommandSender sender, String key) {
-        sender.sendMessage(getMessage(key));
+    public static void sendMessage(CommandSender sender, String messageKey, Object... args) {
+        String finalMessage = getMessage(messageKey, args);
+        sender.sendMessage(finalMessage);
     }
 }

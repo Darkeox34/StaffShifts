@@ -88,7 +88,7 @@ public class ShiftsManager {
                 stafferCache.put(uuid, staffer);
             });
 
-            player.sendMessage(MessageUtils.getMessage("shift-ended").replace("%duration%", formatDuration(shift.getTotalDuration())));
+            MessageUtils.sendMessage(player, "shift-ended", formatDuration(shift.getTotalDuration()));
         }
     }
 

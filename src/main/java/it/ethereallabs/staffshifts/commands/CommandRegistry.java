@@ -80,7 +80,7 @@ public class CommandRegistry implements CommandExecutor, TabCompleter {
     }
 
     void sendDefaultMessage(CommandSender sender) {
-        MessageUtils.sendMessage(sender, "§7§aVersion §bv1.0.1\n" +
+        MessageUtils.sendMessage(sender, "§7§aVersion §bv1.0.0\n" +
                 "§aUse §b/ss help §ato list all commands");
     }
 }

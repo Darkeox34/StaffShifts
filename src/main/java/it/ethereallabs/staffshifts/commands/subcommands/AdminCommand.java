@@ -85,13 +85,13 @@ public class AdminCommand extends BaseCommand {
         String timeStr = args[3];
 
         if (!type.equals("active") && !type.equals("idle")) {
-            MessageUtils.sendMessage(sender, "&cType must be 'active' or 'idle'.");
+            MessageUtils.sendMessage(sender, "type-must-be");
             return;
         }
 
         long time = TimeUtils.parseDuration(timeStr);
         if (time == -1) {
-            MessageUtils.sendMessage(sender, "&cInvalid time format. Use 10s, 1m, 1h30m etc.");
+            MessageUtils.sendMessage(sender, "invalid-time-format");
             return;
         }
 
@@ -108,7 +108,7 @@ public class AdminCommand extends BaseCommand {
                             processModification(sender, uuid, targetName, action, type, time)
                         );
                     } else {
-                        MessageUtils.sendMessage(sender, "&cPlayer " + targetName + " not found in database.");
+                        MessageUtils.sendMessage(sender, "player-not-found",  targetName);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -124,11 +124,11 @@ public class AdminCommand extends BaseCommand {
             if (currentShift != null) {
                 applyChange(currentShift, action, type, time);
                 StaffShifts.getDatabaseManager().saveShift(currentShift, true);
-                MessageUtils.sendMessage(sender, "&aUpdated current shift for " + targetName + ".");
+                MessageUtils.sendMessage(sender, "current-shift-updated", targetName);
             } else {
                 StaffShifts.getShiftsManager().getRecentShifts(uuid, 1, shifts -> {
                     if (shifts.isEmpty()) {
-                        MessageUtils.sendMessage(sender, "&cNo recent shifts found for " + targetName + ".");
+                        MessageUtils.sendMessage(sender, "no-recent-shifts", targetName);
                         return;
                     }
                     Shift lastShift = shifts.getFirst();
@@ -148,7 +148,7 @@ public class AdminCommand extends BaseCommand {
                     StaffShifts.getDatabaseManager().saveShift(lastShift, false);
                     StaffShifts.getDatabaseManager().updateStafferData(staffer);
 
-                    MessageUtils.sendMessage(sender, "&aUpdated last shift for " + targetName + ".");
+                    MessageUtils.sendMessage(sender, "last-shift-updated", targetName);
                 });
             }
         });

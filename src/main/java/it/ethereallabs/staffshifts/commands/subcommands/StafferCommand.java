@@ -53,7 +53,7 @@ public class StafferCommand extends BaseCommand {
                     int index = Integer.parseInt(args[1]);
                     handleRemoveNote(player, index);
                 } catch (NumberFormatException e) {
-                    player.sendMessage("§cPlease insert a valid number.");
+                    player.sendMessage("valid-number-required");
                 }
                 break;
             case "listnotes":
@@ -96,7 +96,7 @@ public class StafferCommand extends BaseCommand {
             return;
         }
 
-        p.sendMessage("§7Current Shift Notes:");
+        MessageUtils.sendMessage(p, "notes-list-header");
 
         List<String> notes = shift.getNotes();
         for (int i = 0; i < notes.size(); i++) {
@@ -143,11 +143,11 @@ public class StafferCommand extends BaseCommand {
         String removedNote = shift.removeNote(internalIndex);
 
         if (removedNote == null) {
-            p.sendMessage("§cNot valid index. Use a number between 1 and " + shift.getNotes().size());
+            MessageUtils.sendMessage(p, "invalid-index", shift.getNotes().size());
             return;
         }
 
         StaffShifts.getDatabaseManager().saveShift(shift, true);
-        p.sendMessage("§aNote successfully deleted: §e" + removedNote);
+        MessageUtils.sendMessage(p, "note-removed", removedNote);
     }
 }

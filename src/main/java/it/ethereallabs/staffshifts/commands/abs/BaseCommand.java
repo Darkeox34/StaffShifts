@@ -20,7 +20,7 @@ public abstract class BaseCommand implements CommandHandler {
 
     public void sendUsage(CommandSender sender) {
         MessageUtils.sendMessage(sender, "invalid-usage");
-        sender.sendMessage("§b> §e/ss " + name + (usage.isEmpty() ? "" : " " + usage));
+        sender.sendMessage("§b> §a/ss " + name + (usage.isEmpty() ? "" : " " + usage));
     }
 
     @Override

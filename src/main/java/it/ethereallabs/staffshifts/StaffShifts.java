@@ -55,7 +55,6 @@ public final class StaffShifts extends JavaPlugin {
     }
 
     public static StaffShifts getInstance() {return instance;}
-    public static AFKManager getAFKManager() { return afkManager; }
     public static ShiftsManager getShiftsManager() { return shiftsManager; }
     public static DatabaseManager getDatabaseManager() {return databaseManager;}
 }
