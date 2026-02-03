@@ -31,12 +31,22 @@ public class ShiftsManager {
         startAutoSaveTask();
     }
 
+    public void reloadConfig() {
+        if (autoSaveTask != null) {
+            autoSaveTask.cancel();
+        }
+        startAutoSaveTask();
+    }
+
     private void startAutoSaveTask() {
+        long seconds = plugin.getConfig().getLong("autosave-seconds", 300);
+        long intervalTicks = seconds * 20L;
+
         this.autoSaveTask = Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, () -> {
             for (Shift shift : activeShifts.values()) {
                 databaseManager.saveShift(shift, true);
             }
-        }, 6000L, 6000L);
+        }, intervalTicks, intervalTicks);
     }
 
     public void shutdown() {

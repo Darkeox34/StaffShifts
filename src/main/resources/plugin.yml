@@ -2,6 +2,9 @@ name: StaffShifts
 version: 1.0.0
 main: it.ethereallabs.staffshifts.StaffShifts
 api-version: 1.21
+libraries:
+  - com.zaxxer:HikariCP:5.1.0
+  - com.mysql:mysql-connector-j:8.4.0
 commands:
   ss:
     description: Main command for StaffShifts

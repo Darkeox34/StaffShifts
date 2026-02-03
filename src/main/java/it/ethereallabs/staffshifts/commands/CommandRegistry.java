@@ -2,10 +2,7 @@ package it.ethereallabs.staffshifts.commands;
 
 import it.ethereallabs.staffshifts.commands.abs.BaseCommand;
 import it.ethereallabs.staffshifts.commands.abs.CommandHandler;
-import it.ethereallabs.staffshifts.commands.subcommands.AdminCommand;
-import it.ethereallabs.staffshifts.commands.subcommands.HelpCommand;
-import it.ethereallabs.staffshifts.commands.subcommands.StafferCommand;
-import it.ethereallabs.staffshifts.commands.subcommands.TestDataCommand;
+import it.ethereallabs.staffshifts.commands.subcommands.*;
 import it.ethereallabs.staffshifts.utils.MessageUtils;
 import it.ethereallabs.staffshifts.utils.Permissions;
 import org.bukkit.command.Command;
@@ -25,6 +22,7 @@ public class CommandRegistry implements CommandExecutor, TabCompleter {
         registerCommand(new TestDataCommand());
         registerCommand(new AdminCommand());
         registerCommand(new HelpCommand(commands));
+        registerCommand(new ReloadCommand());
     }
 
     private void registerCommand(BaseCommand handler) {

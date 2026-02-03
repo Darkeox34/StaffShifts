@@ -21,7 +21,11 @@ public final class StaffShifts extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
+
         saveDefaultConfig();
+        getConfig().options().copyDefaults(true);
+        saveConfig();
+
         MessageUtils.loadMessages();
 
         databaseManager = new DatabaseManager(this);
@@ -56,5 +60,6 @@ public final class StaffShifts extends JavaPlugin {
 
     public static StaffShifts getInstance() {return instance;}
     public static ShiftsManager getShiftsManager() { return shiftsManager; }
+    public static AFKManager getAFKManager() { return afkManager; }
     public static DatabaseManager getDatabaseManager() {return databaseManager;}
 }

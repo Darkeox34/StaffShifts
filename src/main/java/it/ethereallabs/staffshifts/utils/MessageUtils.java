@@ -8,6 +8,11 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.util.logging.Level;
 
 public class MessageUtils {
 
@@ -16,11 +21,27 @@ public class MessageUtils {
     private static FileConfiguration messagesConfig;
 
     public static void loadMessages() {
-        File file = new File(StaffShifts.getInstance().getDataFolder(), "messages.yml");
+        StaffShifts plugin = StaffShifts.getInstance();
+        File file = new File(plugin.getDataFolder(), "messages.yml");
+        
         if (!file.exists()) {
-            StaffShifts.getInstance().saveResource("messages.yml", false);
+            plugin.saveResource("messages.yml", false);
         }
+        
         messagesConfig = YamlConfiguration.loadConfiguration(file);
+
+        InputStream defStream = plugin.getResource("messages.yml");
+        if (defStream != null) {
+            YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(new InputStreamReader(defStream, StandardCharsets.UTF_8));
+            messagesConfig.setDefaults(defConfig);
+            messagesConfig.options().copyDefaults(true);
+            
+            try {
+                messagesConfig.save(file);
+            } catch (IOException e) {
+                plugin.getLogger().log(Level.SEVERE, "Could not save messages.yml", e);
+            }
+        }
     }
 
     public static String getMessage(String key, Object... args) {

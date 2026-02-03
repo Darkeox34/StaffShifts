@@ -6,3 +6,4 @@ database:
     username: "admin"
     password: "changethispassword"
 afk-threshold-seconds: 300
+autosave-seconds: 300
